@@ -1,6 +1,8 @@
 ---
 title: "Identifying Endemic Australia Plant Genera"
-format: html
+format:
+  html:
+    embed-resources: true
 editor: visual
 execute:
   warning: false
@@ -875,6 +877,5 @@ bioregion_counts <- arrange(bioregion_counts, desc(regionally_endemic_genera_cou
 
 #print the top 5 regions containing endemic genera
 head(bioregion_counts, 5)
-
 
 ```
