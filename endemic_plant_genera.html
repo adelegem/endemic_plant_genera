@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Identifying Endemic Australia Plant Genera</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="code_for_upload_files/libs/clipboard/clipboard.min.js"></script>
+<script src="code_for_upload_files/libs/quarto-html/quarto.js"></script>
+<script src="code_for_upload_files/libs/quarto-html/popper.min.js"></script>
+<script src="code_for_upload_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="code_for_upload_files/libs/quarto-html/anchor.min.js"></script>
+<link href="code_for_upload_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="code_for_upload_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="code_for_upload_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="code_for_upload_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="code_for_upload_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Identifying Endemic Australia Plant Genera</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Adele Gemmell</p>
+<section id="this-study-aims-to-create-a-register-of-vascular-plant-genera-that-are-endemic-to-australia.-it-compares-dispersal-traits-and-iucn-threatened-status-between-endemic-and-non-endemic-genera-to-assess-traits-associated-with-endemism-and-threat-assessment-of-endemic-taxa" class="level5">
+<h5 class="anchored" data-anchor-id="this-study-aims-to-create-a-register-of-vascular-plant-genera-that-are-endemic-to-australia.-it-compares-dispersal-traits-and-iucn-threatened-status-between-endemic-and-non-endemic-genera-to-assess-traits-associated-with-endemism-and-threat-assessment-of-endemic-taxa">This study aims to create a register of vascular plant genera that are endemic to Australia. It compares dispersal traits and IUCN threatened status between endemic and non-endemic genera, to assess traits associated with endemism and threat assessment of endemic taxa,</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load libraries </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)       <span class="co">#data wrangling</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)   <span class="co">#data wrangling</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)  <span class="co">#data wrangling</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)     <span class="co">#plotting</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(austraits)   <span class="co">#for download of austraits</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstatix)     <span class="co">#for Wilcox Rank sum test</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sp)          <span class="co">#for spatial mapping</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)          <span class="co">#for spatial mapping</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)      <span class="co">#for raster analysis</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(highcharter) <span class="co">#for treemapping</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(treemap)     <span class="co">#for treemapping</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)<span class="co">#for treemap colours</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="read-in-species-lists-and-occurence-data" class="level3">
+<h3 class="anchored" data-anchor-id="read-in-species-lists-and-occurence-data">Read in species lists and occurence data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load in BIG DATA 2022 genera endemism estimate - contains all aus genera, </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#and a proportion of how many Australia species in each genera are endemic </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#to Aus - does not consider species found outside Australia</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>aus_genera <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/australian_flora/genus_level_endemism_estimate.csv"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#load in species lists/occurence data from NZ, NG, NC, Indonesia, WCVP (Kew Gardens), ALA data</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>wcvp <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="at">file =</span> <span class="st">"data/wcvp/wcvp_names.csv"</span>, <span class="at">header =</span> T)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>wcvp_distribution <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="at">file =</span> <span class="st">"data/wcvp/wcvp_distribution.csv"</span>, <span class="at">header =</span> T)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>ng <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/other_countries_floras/papua_new_guinea_checklist.csv"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>nz <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/other_countries_floras/new_zealand_seedplant_checklist.csv"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>nz2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/other_countries_floras/new_zealand_ferns_lycophyte_checklist.csv"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/other_countries_floras/new_caledonia_checklist.csv"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>indo <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/other_countries_floras/sunda_sahul_checklist.csv"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>ala <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="st">"data/ala/all_ala.csv"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="do">##we can automatically elimate genera with non-endemic aus species</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#make new df for geera where all australian species are endemic </span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>ausplants <span class="ot">&lt;-</span> <span class="fu">subset</span>(aus_genera, prop_endemic <span class="sc">==</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="assessing-shared-genera-between-australia-and-neighbouring-countries" class="level3">
+<h3 class="anchored" data-anchor-id="assessing-shared-genera-between-australia-and-neighbouring-countries">Assessing shared genera between Australia and neighbouring countries</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">##NZ</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#combine nz and nz2 to create full NZ list</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>nz <span class="ot">&lt;-</span> <span class="fu">rbind</span>(nz, nz2)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#remove ? from genus column value in nz data</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>nz<span class="sc">$</span>Genus <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>, <span class="st">""</span>, nz<span class="sc">$</span>Genus)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#remove exotic genera from list</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>nz<span class="ot">&lt;-</span><span class="fu">filter</span>(nz, Origin<span class="sc">!=</span><span class="st">"Exotic"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#create new column to confirm presence of genera in NZ</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>ausplants<span class="sc">$</span>nz <span class="ot">&lt;-</span> ausplants<span class="sc">$</span>genus <span class="sc">%in%</span> nz<span class="sc">$</span>Genus</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="do">##New Caledonia</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#create new column to confirm presence of genera in NC</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>ausplants<span class="sc">$</span>nc <span class="ot">&lt;-</span> ausplants<span class="sc">$</span>genus <span class="sc">%in%</span> nc<span class="sc">$</span>Genre</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="do">##New Guinea</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#create new column to confirm presence of genera in NG</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>ausplants<span class="sc">$</span>ng <span class="ot">&lt;-</span> ausplants<span class="sc">$</span>genus <span class="sc">%in%</span> ng<span class="sc">$</span>Genus</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="do">##Sunda-Sahul Convergence Zone</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#remove australian flora as this dataset includes species from multiple countries</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>indo_non_aus<span class="ot">&lt;-</span><span class="fu">filter</span>(indo,<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"Aus"</span>,Country))</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#problem with Singapore data - records from overseas herbariums including Australia affecting validity of these records</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>indo2 <span class="ot">&lt;-</span><span class="fu">filter</span>(indo_non_aus,<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"Sin"</span>,Country)) </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">#create new column to confirm presence of genera in SSCZ</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>ausplants<span class="sc">$</span>indo2 <span class="ot">&lt;-</span> ausplants<span class="sc">$</span>genus <span class="sc">%in%</span> indo2<span class="sc">$</span>Genus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="combining-wcvp-data-and-removing-records-from-australia" class="level3">
+<h3 class="anchored" data-anchor-id="combining-wcvp-data-and-removing-records-from-australia">Combining WCVP Data and removing records from Australia</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#combing WCVP distribution file with WCVP records file</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>wcvp_comb <span class="ot">&lt;-</span> wcvp_distribution <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(wcvp, <span class="at">by =</span> <span class="st">'plant_name_id'</span>) </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#removing Australian records </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>wcvp_not_aus <span class="ot">&lt;-</span> wcvp_comb <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">!=</span> <span class="st">"Australia"</span>) <span class="co">#removing all Australian plants</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#creating file for Australian records</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>wcvp_aus <span class="ot">&lt;-</span> wcvp_comb <span class="sc">%&gt;%</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"Australia"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#create new column to confirm presence of genera overseas in WCVP data</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ausplants<span class="sc">$</span>wcvp <span class="ot">&lt;-</span> ausplants<span class="sc">$</span>genus <span class="sc">%in%</span> wcvp_not_aus<span class="sc">$</span>genus </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="assess-proportion-of-ala-data-found-inside-australia" class="level3">
+<h3 class="anchored" data-anchor-id="assess-proportion-of-ala-data-found-inside-australia">Assess proportion of ALA data found inside Australia</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#add prop_aus column for proportion of points for each genus (found in aus)/(found out of aus) and total </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">group_by</span>(ala,genus) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">prop_aus=</span>(<span class="fu">sum</span>(countryCode<span class="sc">==</span><span class="st">"AU"</span>,<span class="at">na.rm=</span>T)<span class="sc">/</span><span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(countryCode))),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">n=</span><span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(countryCode)))<span class="ot">-&gt;</span>sum_ala <span class="co">#(check on this?)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#add ALA column, such that if &lt;99% of data records are found outside aus, considered found overseas in ALA data</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>ausplants <span class="ot">&lt;-</span> <span class="fu">left_join</span>(ausplants, sum_ala)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>ausplants <span class="ot">&lt;-</span> ausplants <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ala =</span> prop_aus<span class="sc">&lt;</span><span class="fl">0.99</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#ausplants &lt;- read_csv('intermediate_data/five_sources_summary.csv')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="initial-endemism-assessment---endemic-non-endemic-unclear" class="level3">
+<h3 class="anchored" data-anchor-id="initial-endemism-assessment---endemic-non-endemic-unclear">Initial endemism assessment - endemic, non-endemic, unclear</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#select rows indicating presence of genera in other datasets</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ausplants <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(nz, nc, ng, wcvp, indo2, ala)<span class="ot">-&gt;</span>tst</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate rowsums for 'TRUE' scores - ie. number of rows where genera is found in other countries</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>ausplants<span class="sc">$</span>rowsums<span class="ot">&lt;-</span><span class="fu">rowSums</span>(tst)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#create new column indicating endemism assessment - unclear where only 1 dataset includes genera records outside of australia</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ausplants<span class="sc">$</span>current_knowledge<span class="ot">&lt;-</span><span class="fu">case_when</span>(ausplants<span class="sc">$</span>rowsums<span class="sc">&gt;=</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"non-endemic"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>          ausplants<span class="sc">$</span>rowsums<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"unclear"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>          ausplants<span class="sc">$</span>rowsums<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"endemic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="update-endemism-assessments-after-manual-assessment-of-unclears" class="level3">
+<h3 class="anchored" data-anchor-id="update-endemism-assessments-after-manual-assessment-of-unclears">Update endemism assessments after manual assessment of unclears</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create new df with only 'unclear' genera</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>unclear <span class="ot">&lt;-</span> ausplants[ausplants<span class="sc">$</span>current_knowledge <span class="sc">==</span> <span class="st">'unclear'</span>, ]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#add reason column, to denote reason for confirming endemic/non-endemic status</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#add endemism status with reason for uncertainty/assessment</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">'ALA taxonomy error'</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomy error'</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">'POWO data error'</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span> </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="st">'records from 1950s, PNG occurence from NSW Bot Gardens'</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span> </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="st">'POWO data error'</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">6</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">6</span>] <span class="ot">&lt;-</span> <span class="st">'Indo data error'</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">7</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">7</span>] <span class="ot">&lt;-</span> <span class="st">'POWO data error'</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">8</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">8</span>] <span class="ot">&lt;-</span> <span class="st">'NC occurence'</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic error - synonym Machaerina used'</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">10</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">10</span>] <span class="ot">&lt;-</span> <span class="st">'PNG native'</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">11</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">11</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data/shapefile error'</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">12</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">12</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data/shapefile error'</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">13</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">13</span>] <span class="ot">&lt;-</span> <span class="st">'ornamental plant in UK'</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">14</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">14</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic uncertainty - WCVP says 4 species, zimbabwe flora mentions only 1 accepted species'</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">15</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">15</span>] <span class="ot">&lt;-</span> <span class="st">'ng data error'</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">16</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">16</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomy error, NZ species'</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">17</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">17</span>] <span class="ot">&lt;-</span> <span class="st">'introduced NZ and California'</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">18</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">18</span>] <span class="ot">&lt;-</span> <span class="st">'introduced India'</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">19</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">19</span>] <span class="ot">&lt;-</span> <span class="st">'species found in South America'</span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="st">'introduced ornamentals in UK'</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">21</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">21</span>] <span class="ot">&lt;-</span> <span class="st">'species found in Africa, Americas, South Asia etc'</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">22</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">22</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic confusion, tasmania only'</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">23</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">23</span>] <span class="ot">&lt;-</span> <span class="st">'species found in Africa, Americas, South Asia etc'</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">24</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">24</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic error in indo data'</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">25</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">25</span>] <span class="ot">&lt;-</span> <span class="st">'found in americas'</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">26</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">26</span>] <span class="ot">&lt;-</span> <span class="st">'found in PNG POWO taxonomic confusion'</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">27</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">27</span>] <span class="ot">&lt;-</span> <span class="st">'POWO error'</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">28</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">28</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic uncertainty'</span></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">29</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">29</span>] <span class="ot">&lt;-</span> <span class="st">'dist in South America'</span></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">30</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">30</span>] <span class="ot">&lt;-</span> <span class="st">'dist in PNG'</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">31</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">31</span>] <span class="ot">&lt;-</span> <span class="st">'introdced to india - POWO mismatch'</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">32</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">32</span>] <span class="ot">&lt;-</span> <span class="st">'ALA error (Georgiella species entered as Georgeantha'</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">33</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">33</span>] <span class="ot">&lt;-</span> <span class="st">'Madagascar distribution'</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">34</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">34</span>] <span class="ot">&lt;-</span> <span class="st">'introdced to New Zealand - POWO mismatch'</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">35</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">35</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic confusion - synonym w justicia'</span></span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">36</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">36</span>] <span class="ot">&lt;-</span> <span class="st">'endemic to lord howe - record in NZ?'</span></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">37</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">37</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic confusion - unplaced in POWO'</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">38</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">38</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data error'</span></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">39</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">39</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data error'</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">40</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">40</span>] <span class="ot">&lt;-</span> <span class="st">'distribution in Chile'</span></span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">41</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">41</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data error'</span></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">42</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">42</span>] <span class="ot">&lt;-</span> <span class="st">'species found in Africa, Asia, Australia'</span></span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">43</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">43</span>] <span class="ot">&lt;-</span> <span class="st">'Indo data error'</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">44</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">44</span>] <span class="ot">&lt;-</span> <span class="st">'species endemic to Norfolk Island'</span></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">45</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">45</span>] <span class="ot">&lt;-</span> <span class="st">'introduced to NZ and India'</span></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">46</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">46</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data error'</span></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">47</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">47</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data error'</span></span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">48</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">48</span>] <span class="ot">&lt;-</span> <span class="st">'introduced to India'</span></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">49</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">49</span>] <span class="ot">&lt;-</span> <span class="st">'introduced to Czechia'</span></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">50</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">50</span>] <span class="ot">&lt;-</span> <span class="st">'species found in Americas and Australia'</span></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">51</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">51</span>] <span class="ot">&lt;-</span> <span class="st">'species found in Europe, Africa, Asia, Australia'</span></span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">52</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">52</span>] <span class="ot">&lt;-</span> <span class="st">'WVCP data error'</span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">53</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">53</span>] <span class="ot">&lt;-</span> <span class="st">'ALA data error'</span></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">54</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">54</span>] <span class="ot">&lt;-</span> <span class="st">'introduced to Great Britain'</span></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">55</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">55</span>] <span class="ot">&lt;-</span> <span class="st">'introduced to Great Britain'</span></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">56</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">56</span>] <span class="ot">&lt;-</span> <span class="st">'synonym for Ochrosia, found across SE &amp; E asia'</span> <span class="co">#Neisosperma</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">57</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">57</span>] <span class="ot">&lt;-</span> <span class="st">'synonym for Apostasia, found in SE Asia'</span> <span class="co">#Niemeyera</span></span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">58</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">58</span>] <span class="ot">&lt;-</span> <span class="st">'Limited PNG occurrence - introduced, flagged as basis of record invalid'</span> <span class="co">#Oraniopsis</span></span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">59</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">59</span>] <span class="ot">&lt;-</span> <span class="st">'Known to be native to Bolivia and Chile'</span> <span class="co">#Orites</span></span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">60</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">60</span>] <span class="ot">&lt;-</span> <span class="st">'Known to be native to Mexico and South America'</span> <span class="co">#Orthrosanthus</span></span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">61</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">61</span>] <span class="ot">&lt;-</span> <span class="st">'Cosmopolitan genera - synonym: Hemionitis'</span> <span class="co">#Paraceterach</span></span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">62</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">62</span>] <span class="ot">&lt;-</span> <span class="st">'Data error - single preserved specimen from PNG'</span> <span class="co">#Peripentadenia</span></span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">63</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">63</span>] <span class="ot">&lt;-</span> <span class="st">'synonym for Arthrochilus- single sp. in PNG'</span> <span class="co">#Phoringopsis</span></span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">64</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">64</span>] <span class="ot">&lt;-</span> <span class="st">'synonym for Phreatia'</span> <span class="co">#Plexaure</span></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">65</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">65</span>] <span class="ot">&lt;-</span> <span class="st">'synonym for Caltha'</span> <span class="co">#Psychrophila</span></span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">66</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">66</span>] <span class="ot">&lt;-</span> <span class="st">'WCVP Data error - single 200 year old record in NZ'</span> <span class="co">#Pyrorchis</span></span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">67</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">67</span>] <span class="ot">&lt;-</span> <span class="st">'Data duplication of incorrect point'</span> <span class="co">#Rhinerrhiza</span></span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">68</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">68</span>] <span class="ot">&lt;-</span> <span class="st">'synonym for Phreatia'</span> <span class="co">#Rhipidorchis</span></span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">69</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">69</span>] <span class="ot">&lt;-</span> <span class="st">'Introduced and grown as an ornamental'</span> <span class="co">#Rhodanthe</span></span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">70</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">70</span>] <span class="ot">&lt;-</span> <span class="st">'Introduced into NZ, UK, &amp; USA'</span> <span class="co">#Rumicastrum</span></span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">71</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">71</span>] <span class="ot">&lt;-</span> <span class="st">'Synonym with Goodenia'</span></span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">72</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">72</span>] <span class="ot">&lt;-</span> <span class="st">'wcvp incorrect, found in PNG'</span></span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">73</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">73</span>] <span class="ot">&lt;-</span> <span class="st">'Taxonomy mix up'</span></span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">74</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">74</span>] <span class="ot">&lt;-</span> <span class="st">'Found in PNG and Malaysia as well'</span></span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">75</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">75</span>] <span class="ot">&lt;-</span> <span class="st">'Synonym with Brachypterum, found in southern Asia'</span></span>
+<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">76</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">76</span>] <span class="ot">&lt;-</span> <span class="st">'Outlier in Indo data, only one point'</span></span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">77</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">77</span>] <span class="ot">&lt;-</span> <span class="st">'Introduced to Britain'</span></span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">78</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">78</span>] <span class="ot">&lt;-</span> <span class="st">'Small numbers outside, botanical gardens'</span></span>
+<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">79</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">79</span>] <span class="ot">&lt;-</span> <span class="st">'Synonym with Aleurites'</span></span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">80</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">80</span>] <span class="ot">&lt;-</span> <span class="st">'Synonym with Ardisia'</span></span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">81</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">81</span>] <span class="ot">&lt;-</span> <span class="st">'Found in South America as well'</span></span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">82</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">82</span>] <span class="ot">&lt;-</span> <span class="st">'Error in occurrence data, single occurrences outside Australia (oriental/botanical gardens)'</span></span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">83</span>] <span class="ot">&lt;-</span> <span class="st">'endemic'</span></span>
+<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">83</span>] <span class="ot">&lt;-</span> <span class="st">'taxonomic within genus'</span></span>
+<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">84</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">84</span>] <span class="ot">&lt;-</span> <span class="st">'Native to US and found else where in the world'</span></span>
+<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">85</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">85</span>] <span class="ot">&lt;-</span> <span class="st">'Found in NZ, ALA incorrect'</span></span>
+<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-263"><a href="#cb7-263" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">86</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-264"><a href="#cb7-264" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">86</span>] <span class="ot">&lt;-</span> <span class="st">'Found in New Caledonia and Papua New Guinea'</span></span>
+<span id="cb7-265"><a href="#cb7-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-266"><a href="#cb7-266" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>current_knowledge[<span class="dv">87</span>] <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb7-267"><a href="#cb7-267" aria-hidden="true" tabindex="-1"></a>unclear<span class="sc">$</span>reason[<span class="dv">87</span>] <span class="ot">&lt;-</span> <span class="st">'Found in Myanmar'</span></span>
+<span id="cb7-268"><a href="#cb7-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-269"><a href="#cb7-269" aria-hidden="true" tabindex="-1"></a><span class="co">#remove unclears from ausplants df</span></span>
+<span id="cb7-270"><a href="#cb7-270" aria-hidden="true" tabindex="-1"></a>ausplants <span class="ot">&lt;-</span> ausplants[ausplants<span class="sc">$</span>current_knowledge <span class="sc">!=</span> <span class="st">"unclear"</span>, ]</span>
+<span id="cb7-271"><a href="#cb7-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-272"><a href="#cb7-272" aria-hidden="true" tabindex="-1"></a><span class="co">#add back now classified 'unclear' genera</span></span>
+<span id="cb7-273"><a href="#cb7-273" aria-hidden="true" tabindex="-1"></a>ausplants <span class="ot">&lt;-</span> <span class="fu">rbind</span>(ausplants, unclear[<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>])</span>
+<span id="cb7-274"><a href="#cb7-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-275"><a href="#cb7-275" aria-hidden="true" tabindex="-1"></a><span class="co">#order alphabetically</span></span>
+<span id="cb7-276"><a href="#cb7-276" aria-hidden="true" tabindex="-1"></a>ausplants <span class="ot">&lt;-</span> ausplants[<span class="fu">order</span>(ausplants<span class="sc">$</span>genus), ]</span>
+<span id="cb7-277"><a href="#cb7-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-278"><a href="#cb7-278" aria-hidden="true" tabindex="-1"></a><span class="co">#rename current_knowlege column to endemism_status</span></span>
+<span id="cb7-279"><a href="#cb7-279" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ausplants)[<span class="fu">colnames</span>(ausplants) <span class="sc">==</span> <span class="st">'current_knowledge'</span>] <span class="ot">&lt;-</span> <span class="st">'endemism_status'</span></span>
+<span id="cb7-280"><a href="#cb7-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-281"><a href="#cb7-281" aria-hidden="true" tabindex="-1"></a><span class="co">#save register of endemic plant genera</span></span>
+<span id="cb7-282"><a href="#cb7-282" aria-hidden="true" tabindex="-1"></a>ausplants[ , <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">13</span>)] <span class="sc">%&gt;%</span> </span>
+<span id="cb7-283"><a href="#cb7-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(endemism_status <span class="sc">==</span> <span class="st">'endemic'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-284"><a href="#cb7-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">'data_out/register_of_endemic_plant_genera.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="combine-endemic-and-non-endemic-genera-for-traitiucn-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="combine-endemic-and-non-endemic-genera-for-traitiucn-comparison">Combine endemic and non-endemic genera for trait/IUCN comparison</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create non-endemic subset where proportion endemic aus species was &lt;1 (from 2022 Big Data Project)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>non_end <span class="ot">&lt;-</span> <span class="fu">subset</span>(aus_genera, prop_endemic <span class="sc">&lt;</span> <span class="dv">1</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#create endemism classification column</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>non_end<span class="sc">$</span>endemism_status <span class="ot">&lt;-</span> <span class="st">'non-endemic'</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#combine non-endemic and dataframe ausplants to represent all aus genera with classification</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>all_aus_genera <span class="ot">&lt;-</span> <span class="fu">rbind</span>(non_end[ , <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>)], ausplants[ , <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">13</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="adding-threatened-status-from-iucn-data" class="level3">
+<h3 class="anchored" data-anchor-id="adding-threatened-status-from-iucn-data">Adding Threatened Status from IUCN data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#read in red list data </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>redlist <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">"data/REDLIST_Folder/simple_summary.csv"</span>, <span class="at">header =</span> T)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Filters redlist data to only include genera within all_aus_genera data</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>redlist <span class="ot">&lt;-</span> redlist <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(genusName <span class="sc">%in%</span> all_aus_genera<span class="sc">$</span>genus) </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#combine the two 'Lower Risk' categories</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>redlist<span class="sc">$</span>redlistCategory <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"Lower Risk/(conservation dependent|near threatened)"</span>, <span class="st">"Lower Risk"</span>, redlist<span class="sc">$</span>redlistCategory)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#remove extinct records</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>redlist <span class="ot">&lt;-</span> redlist <span class="sc">%&gt;%</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(redlistCategory <span class="sc">!=</span> <span class="st">"Extinct"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#Creating counts frame for each threatened status</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> redlist <span class="sc">%&gt;%</span> </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(genusName) <span class="sc">%&gt;%</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(redlistCategory) <span class="sc">%&gt;%</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> redlistCategory, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="cn">NA</span>) </span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Join the counts with fivesource.trial based on genera2</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>all_aus_status <span class="ot">&lt;-</span> all_aus_genera  <span class="sc">%&gt;%</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(counts, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"genus"</span> <span class="ot">=</span> <span class="st">"genusName"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="co">#remove NAs</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">9</span>), <span class="sc">~</span><span class="fu">replace_na</span>(.,<span class="dv">0</span>))</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(all_aus_status, <span class="st">'data_out/all_genera_with_threatened_status.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="adding-austraits-data---dispersal-growth-form-traits" class="level2">
+<h2 class="anchored" data-anchor-id="adding-austraits-data---dispersal-growth-form-traits">Adding Austraits data - dispersal + growth form traits</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load austraits</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"traitecoevo/austraits"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>austraits <span class="ot">&lt;-</span> <span class="fu">load_austraits</span>(<span class="at">version =</span> <span class="st">"4.1.0"</span>, <span class="at">path =</span> <span class="st">"intro/downloads"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#make genus_list from our australian genera df</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>genus_list <span class="ot">&lt;-</span> all_aus_genera<span class="sc">$</span>genus</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#now select the categorical traits we want to extract - dispersal appendage, syndrome, plant growth form using the extract_trait function</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>cat_traits <span class="ot">&lt;-</span> austraits <span class="sc">%&gt;%</span> <span class="fu">extract_trait</span>(<span class="fu">c</span>(<span class="st">'dispersal_syndrome'</span>, <span class="st">'plant_growth_form'</span>))</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#join traits to produce dataframe </span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>cat_traits_joined <span class="ot">&lt;-</span> <span class="fu">left_join</span>(cat_traits[[<span class="st">"traits"</span>]], cat_traits[[<span class="st">"taxa"</span>]], <span class="at">by =</span> <span class="st">"taxon_name"</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#keep only records for genera on our australian genera list</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>cat_traits_joined <span class="ot">&lt;-</span> cat_traits_joined[cat_traits_joined<span class="sc">$</span>genus <span class="sc">%in%</span> genus_list, ]</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#pivot df such that each row is a genus from the australian genera list, and the most commonly recorded plant growth, dispersal appendage, dispersal syndrome traits are applied for each genus</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>austraits_genera <span class="ot">&lt;-</span> cat_traits_joined <span class="sc">%&gt;%</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(genus, trait_name, value) <span class="sc">%&gt;%</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> trait_name, <span class="at">values_from =</span> value, <span class="at">values_fn =</span> max)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#now the same for seed_traits</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>disp_traits <span class="ot">&lt;-</span> austraits <span class="sc">%&gt;%</span> <span class="fu">extract_trait</span>(<span class="fu">c</span>(<span class="st">'seed_dry_mass'</span>, <span class="st">'plant_height'</span>))</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#seed traits joined</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>disp_traits_joined <span class="ot">&lt;-</span> <span class="fu">left_join</span>(disp_traits[[<span class="st">"traits"</span>]], disp_traits[[<span class="st">"taxa"</span>]], <span class="at">by =</span> <span class="st">"taxon_name"</span>)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#keep only records for genera on our australian genera list</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>disp_traits_joined <span class="ot">&lt;-</span> disp_traits_joined[disp_traits_joined<span class="sc">$</span>genus <span class="sc">%in%</span> genus_list, ]</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#pivot df such that each row is a genus from the australian genera list, and the mean of recorded dry_seed_mass are applied for each genus</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>disp_genera <span class="ot">&lt;-</span> disp_traits_joined <span class="sc">%&gt;%</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(genus, trait_name, value) <span class="sc">%&gt;%</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> trait_name, <span class="at">values_from =</span> value, <span class="at">values_fn =</span> mean)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#add categorical traits and numerical seed mass traits together</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>austraits_genera <span class="ot">&lt;-</span> <span class="fu">left_join</span>(austraits_genera, disp_genera, <span class="at">by =</span> <span class="st">'genus'</span>)</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="co">#write csv for all australian genera with traits</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(austraits_genera, <span class="st">'data_out/all_genera_with_traits.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="wilcox-rank-sum-test---dry-seed-mass-plant-height" class="level3">
+<h3 class="anchored" data-anchor-id="wilcox-rank-sum-test---dry-seed-mass-plant-height">Wilcox Rank sum test - dry seed mass &amp; plant height</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#adding the endemism status to this dataframe for subsequent plotting and tests</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>genera <span class="ot">&lt;-</span> <span class="fu">merge</span>(austraits_genera, all_aus_genera[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">by =</span> <span class="st">'genus'</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#wilcox rank sum test for seed_dry_mass </span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>seed_test <span class="ot">&lt;-</span> genera <span class="sc">%&gt;%</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">wilcox_test</span>(seed_dry_mass <span class="sc">~</span> endemism_status) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_significance</span>()</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>seed_test <span class="co">#p &lt; 0.0.000733, significant</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  .y.           group1  group2         n1    n2 statistic        p p.signif
+  &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   
+1 seed_dry_mass endemic non-endemic   449  1001    199830 0.000733 ***     </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#wilcox rank sum test for plant_height</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>height_test <span class="ot">&lt;-</span> genera <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">wilcox_test</span>(plant_height <span class="sc">~</span> endemism_status) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_significance</span>()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>height_test <span class="co">#p &lt; 0.0.0005, significant</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  .y.          group1  group2         n1    n2 statistic        p p.signif
+  &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   
+1 plant_height endemic non-endemic   617  1184   296878. 6.61e-11 ****    </code></pre>
+</div>
+</div>
+</section>
+<section id="seed-mass-results---violin-plot" class="level3">
+<h3 class="anchored" data-anchor-id="seed-mass-results---violin-plot">Seed mass results - violin plot</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plotting of seed_dry_mass - violin plot w boxplot</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>violin_seed <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(genera, <span class="fu">aes</span>(<span class="at">x =</span> endemism_status, <span class="at">y =</span> seed_dry_mass, <span class="at">fill =</span> endemism_status)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>() <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">'Endemic status'</span>, <span class="at">x =</span> <span class="st">'Endemic status'</span>, <span class="at">y =</span> <span class="st">'log dry seed mass (mg)'</span>, <span class="at">title =</span> <span class="st">'Mean seed mass of endemic and non-endemic genera'</span>) <span class="sc">+</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">sprintf</span>(<span class="st">"%.0f"</span>, x)) <span class="sc">+</span><span class="co">#remove sci notation+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width=</span><span class="fl">0.05</span>) <span class="co">#adds boxplot within violin plot</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>violin_seed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="plant-height-results---violin-plot" class="level3">
+<h3 class="anchored" data-anchor-id="plant-height-results---violin-plot">Plant height results - violin plot</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plant height plots - violin w boxplot</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>violin_height <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(genera, <span class="fu">aes</span>(<span class="at">x =</span> endemism_status, <span class="at">y =</span> plant_height, <span class="at">fill =</span> endemism_status)) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>() <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">'Mean plant height of endemic and non-endemic genera'</span>, <span class="at">fill =</span> <span class="st">'Endemic status'</span>, <span class="at">x =</span> <span class="st">'Endemic status'</span>, <span class="at">y =</span> <span class="st">'log plant height (cm)'</span>) <span class="sc">+</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()  <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">sprintf</span>(<span class="st">"%.0f"</span>, x)) <span class="sc">+</span> <span class="co">#remove sci notation+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width=</span><span class="fl">0.05</span>) <span class="co">#adds boxplot within violin plot</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>violin_height</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="simplifying-growth-forms" class="level3">
+<h3 class="anchored" data-anchor-id="simplifying-growth-forms">Simplifying growth forms</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot growth form - yields 25 different categories - poor visualisation</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(genera, <span class="fu">aes</span>(<span class="at">x =</span> endemism_status, <span class="at">fill =</span> plant_growth_form)) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#simplifying growth form to combine categories which begin with climber, fern, graminoids, shrub/include shrub, tree, herb. new column growth_form_simp</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>genera <span class="ot">&lt;-</span> genera <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">growth_form_simp =</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">startsWith</span>(plant_growth_form, <span class="st">"climber"</span>) <span class="sc">~</span> <span class="st">"climber"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">startsWith</span>(plant_growth_form, <span class="st">"fern"</span>) <span class="sc">~</span> <span class="st">"fern"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">startsWith</span>(plant_growth_form, <span class="st">"graminoid"</span>) <span class="sc">~</span> <span class="st">"graminoid"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">startsWith</span>(plant_growth_form, <span class="st">"shrub"</span>) <span class="sc">~</span> <span class="st">"shrub"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"shrub"</span>, plant_growth_form, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="st">"shrub"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">startsWith</span>(plant_growth_form, <span class="st">"tree"</span>) <span class="sc">~</span> <span class="st">"tree"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">startsWith</span>(plant_growth_form, <span class="st">"herb"</span>) <span class="sc">~</span> <span class="st">"herb"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> plant_growth_form</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co">#calculating proportion of each simplified growth form</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>proportions_data <span class="ot">&lt;-</span> genera <span class="sc">%&gt;%</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(endemism_status, growth_form_simp) <span class="sc">%&gt;%</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(endemism_status) <span class="sc">%&gt;%</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proportion =</span> count <span class="sc">/</span> <span class="fu">sum</span>(count))</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co">#remove graminoids, lycophyte, palmoids for plotting as these contain ~1 species (but they remain part of proportion calulcations)</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>proportions  <span class="ot">&lt;-</span> proportions_data  <span class="sc">%&gt;%</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(growth_form_simp <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"palmoid"</span>, <span class="st">"lycophyte"</span>, <span class="st">"graminoid"</span>)))</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a><span class="co">#plotting growth forms as a proportion of total number of endemic and non-endemic genera</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>growth_bar <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(proportions, <span class="fu">aes</span>(<span class="at">x =</span> endemism_status, <span class="at">y =</span> proportion, <span class="at">fill =</span> growth_form_simp)) <span class="sc">+</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Endemism Status"</span>, <span class="at">y =</span> <span class="st">"Proportion of genera in each category"</span>, <span class="at">title =</span> <span class="st">"Plant growth forms of endemic and non-endemic genera"</span>, <span class="at">fill =</span> <span class="st">'Simplified growth form'</span>) <span class="sc">+</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>growth_bar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="chi-squared-test-for-plant-growth-form" class="level3">
+<h3 class="anchored" data-anchor-id="chi-squared-test-for-plant-growth-form">Chi Squared test for plant growth form</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#contingency table for growth form</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cont_form <span class="ot">&lt;-</span> <span class="fu">table</span>(genera<span class="sc">$</span>growth_form_simp, genera<span class="sc">$</span>endemism_status)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#chi square test</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>chi_form <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(cont_form, <span class="at">correct =</span> F)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>chi_form</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  cont_form
+X-squared = 149.49, df = 8, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="dispersal-syndrome---plots" class="level3">
+<h3 class="anchored" data-anchor-id="dispersal-syndrome---plots">Dispersal syndrome - plots</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot data to view categories - too many categories, poor visualisation, NA and undefined to be removed</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(genera, <span class="fu">aes</span>(<span class="at">x =</span> endemism_status, <span class="at">fill =</span> dispersal_syndrome)) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#filter data into main categories</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>dispersal_filtered <span class="ot">&lt;-</span> genera <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(dispersal_syndrome <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'anemochory'</span>, <span class="st">'hydrochory'</span>, <span class="st">'barochory'</span>, <span class="st">'endozoochory'</span>, <span class="st">'zoochory'</span>, <span class="st">'myrmecochory'</span>, <span class="st">'epizoochory'</span>))</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#for consistency, replace endozoochory and epizoochory with zoochory </span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>dispersal_filtered <span class="ot">&lt;-</span> dispersal_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dispersal_syndrome =</span> <span class="fu">ifelse</span>(dispersal_syndrome <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'epizoochory'</span>, <span class="st">'endozoochory'</span>), <span class="st">'zoochory'</span>, dispersal_syndrome))</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#now calculate proportional data </span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>proportions_disp <span class="ot">&lt;-</span> dispersal_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(endemism_status, dispersal_syndrome) <span class="sc">%&gt;%</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(endemism_status) <span class="sc">%&gt;%</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proportion =</span> count <span class="sc">/</span> <span class="fu">sum</span>(count))</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co">#display dispersal syndrome plot, proportion to total number in each category</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>disp_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(proportions_disp, <span class="fu">aes</span>(<span class="at">x =</span> endemism_status, <span class="at">y =</span> proportion, <span class="at">fill =</span> dispersal_syndrome)) <span class="sc">+</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Endemism Status"</span>, <span class="at">y =</span> <span class="st">"Proportion of genera in each category"</span>, <span class="at">title =</span> <span class="st">"Dispersal syndromes of endemic and non-endemic genera"</span>, <span class="at">fill =</span> <span class="st">'Primary dispersal syndrome'</span>) <span class="sc">+</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Spectral"</span>)</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>disp_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="chi-square-test---dispersal-syndrome" class="level3">
+<h3 class="anchored" data-anchor-id="chi-square-test---dispersal-syndrome">Chi square test - dispersal syndrome</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create contingency table for chi square test</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>cont_disp <span class="ot">&lt;-</span> <span class="fu">table</span>(dispersal_filtered<span class="sc">$</span>endemism_status, dispersal_filtered<span class="sc">$</span>dispersal_syndrome)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#perform chi square test</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>chi_disp <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(cont_disp, <span class="at">correct =</span> F)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>chi_disp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  cont_disp
+X-squared = 17.575, df = 4, p-value = 0.001494</code></pre>
+</div>
+</div>
+</section>
+<section id="threatened-status---plots" class="level3">
+<h3 class="anchored" data-anchor-id="threatened-status---plots">Threatened status - plots</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#produce df which counts data by endemism status and threatened status</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>threat_all <span class="ot">&lt;-</span> all_aus_status <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(endemism_status) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">matches</span>(<span class="st">"Least Concern|Critically Endangered|Endangered|Near Threatened|Vulnerable|Data Deficient|Lower Risk"</span>), sum, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"Least Concern|Critically Endangered|Endangered|Near Threatened|Vulnerable|Data Deficient|Lower Risk"</span>),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"threat_status"</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"count"</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate proportions of threatened status per group (endemic + non-endemic)</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>threat_all <span class="ot">&lt;-</span> threat_all <span class="sc">%&gt;%</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(endemism_status) <span class="sc">%&gt;%</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proportions =</span> count <span class="sc">/</span> <span class="fu">sum</span>(count))</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">#order the threatned status in order of severity</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>threat_order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Critically Endangered"</span>, <span class="st">"Endangered"</span>, <span class="st">"Vulnerable"</span>, <span class="st">"Near Threatened"</span>, <span class="st">"Lower Risk"</span>, <span class="st">"Least Concern"</span>, <span class="st">"Data Deficient"</span>)</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co"># apply this as a factor with the defined order so that plots display preferred order</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>threat_all<span class="sc">$</span>threat_status <span class="ot">&lt;-</span> <span class="fu">factor</span>(threat_all<span class="sc">$</span>threat_status, <span class="at">levels =</span> threat_order)</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="co">#proportional bar chart plot </span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>threat_bar <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(threat_all, <span class="fu">aes</span>(<span class="at">x =</span> endemism_status, <span class="at">y =</span> proportions, <span class="at">fill =</span> threat_status)) <span class="sc">+</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Endemism Status"</span>, <span class="at">y =</span> <span class="st">"Proportion of genera in each category"</span>, <span class="at">title =</span> <span class="st">"IUCN threatened status of endemic and non-endemic genera"</span>, <span class="at">fill =</span> <span class="st">'IUCN threatened status'</span>) <span class="sc">+</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>  </span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"RdYlGn"</span>)</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>threat_bar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="threatened-status---chi-square-test" class="level3">
+<h3 class="anchored" data-anchor-id="threatened-status---chi-square-test">Threatened status - chi square test</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#convert threat_all to a longer dataframe, with each count of a threat status</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co">#represented as a row, so it can be converted to contingency table for testing</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>threat_status <span class="ot">&lt;-</span> <span class="fu">uncount</span>(threat_all[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="at">weights =</span> count) <span class="co">#remove proportion by selecting rows 1-3</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#create contingency table for chi square</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>cont_status <span class="ot">&lt;-</span> <span class="fu">table</span>(threat_status<span class="sc">$</span>endemism_status, threat_status<span class="sc">$</span>threat_status)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">#chi square test</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>chi_status <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(cont_status, <span class="at">correct =</span> F)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>chi_status</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  cont_status
+X-squared = 79.274, df = 6, p-value = 5.046e-15</code></pre>
+</div>
+</div>
+</section>
+<section id="bioregion-mapping---genera-per-bioregion" class="level3">
+<h3 class="anchored" data-anchor-id="bioregion-mapping---genera-per-bioregion">Bioregion mapping - genera per bioregion</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Calculate genera per bioregion and map</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#read in endemic genera points - sourced from ALA and filtered to endemics</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>points <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/ala/locations_endemic_genera.csv'</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#convert species points to sp object with point geometries</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>species_points_sf <span class="ot">&lt;-</span> points <span class="sc">%&gt;%</span> </span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"decimalLongitude"</span>, <span class="st">"decimalLatitude"</span>), </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">crs =</span> <span class="fu">st_crs</span>(<span class="dv">4326</span>))</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#set a CRAN mirror for rendering</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fu">chooseCRANmirror</span>(<span class="at">ind =</span> <span class="dv">1</span>)  <span class="co"># Replace 1 with the index of the mirror you want to use</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#install the 'remotes' package</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>package 'remotes' successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+    C:\Users\adele\AppData\Local\Temp\Rtmpa63Rak\downloaded_packages</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(remotes)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#install bioregions map</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"johnbaums/things"</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#read bioregions spatial polygon dataframe. has &gt;9000 polygons but only 89 bioregions</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>bioregions <span class="ot">&lt;-</span> things<span class="sc">::</span>ibra7_albers</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#set projection</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>crs_4326 <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:4326"</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">#transform to WGS84 projection - matching points projection</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>bioregions <span class="ot">&lt;-</span> <span class="fu">spTransform</span>(bioregions, crs_4326)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co">#convert to sf object</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>bioregions_df <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(bioregions)</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="co">#apply bioregion location to species occurence</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>species_bioregion_sf <span class="ot">&lt;-</span> <span class="fu">st_join</span>(species_points_sf, bioregions_df, <span class="at">join =</span> st_within)</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate unique genera per bioregion - rather than occurences (reduces bias of oversampled urban areas)</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>unique_genera_bioregion_sf <span class="ot">&lt;-</span> species_bioregion_sf <span class="sc">%&gt;%</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(REG_NAME_7, genus, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate genera per bioregion</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>genera_counts_per_bioregion <span class="ot">&lt;-</span> unique_genera_bioregion_sf <span class="sc">%&gt;%</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(REG_NAME_7) <span class="sc">%&gt;%</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">genera_count =</span> <span class="fu">n</span>(), <span class="at">REG_NAME_7 =</span> <span class="fu">first</span>(REG_NAME_7))</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a><span class="co"># merged polygons into 89 bioregions for better visualisation</span></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>merged_sf <span class="ot">&lt;-</span> bioregions_df <span class="sc">%&gt;%</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(REG_NAME_7) <span class="sc">%&gt;%</span></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">geometry =</span> <span class="fu">st_union</span>(geometry)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a><span class="co">#create grid with bioregion map + genera counts per bioregion</span></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>IBRA_grid_bio_gen <span class="ot">&lt;-</span> merged_sf <span class="sc">%&gt;%</span></span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> REG_NAME_7) <span class="sc">%&gt;%</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(genera_counts_per_bioregion,</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">join_by</span>(id <span class="sc">==</span> REG_NAME_7)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a><span class="co">#plot counts of genera per bioregion</span></span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>bio_gen_count <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> IBRA_grid_bio_gen, <span class="fu">aes</span>(<span class="at">fill =</span> genera_count), <span class="at">size =</span> .<span class="dv">01</span>) <span class="sc">+</span></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(<span class="at">colours =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"blue"</span>), </span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>                       <span class="at">na.value =</span> <span class="st">"white"</span>, </span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="co">#removes scientific not</span></span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a>                       <span class="at">n.breaks =</span> <span class="dv">6</span>,</span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a>                       <span class="at">guide =</span> <span class="fu">guide_colourbar</span>(<span class="at">title =</span> <span class="st">"endemic genera"</span>)) <span class="sc">+</span></span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">45</span>, <span class="sc">-</span><span class="dv">10</span>), </span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">110</span>, <span class="dv">155</span>)) <span class="sc">+</span></span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'longtiude'</span>, <span class="at">y =</span> <span class="st">'latitude'</span>) <span class="sc">+</span></span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>bio_gen_count</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="bioregion-mapping---genera-per-bioregion-normalised-by-area" class="level3">
+<h3 class="anchored" data-anchor-id="bioregion-mapping---genera-per-bioregion-normalised-by-area">Bioregion mapping - genera per bioregion, normalised by area</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Calculate species richness normalised by bioregion area + map</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#create area column</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>IBRA_grid_bio_gen<span class="sc">$</span>area <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate area of bioregions</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>IBRA_grid_bio_gen<span class="sc">$</span>area <span class="ot">&lt;-</span> <span class="fu">st_area</span>(IBRA_grid_bio_gen[<span class="dv">1</span>])</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#normalise species count by area</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>IBRA_grid_bio_gen<span class="sc">$</span>prop_count <span class="ot">&lt;-</span> IBRA_grid_bio_gen<span class="sc">$</span>genera_count<span class="sc">/</span>IBRA_grid_bio_gen<span class="sc">$</span>area</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co"># remove the "[1/m²]" unit from 'prop_count' column</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>IBRA_grid_bio_gen<span class="sc">$</span>prop_count <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">[1/m²</span><span class="sc">\\</span><span class="st">]"</span>, <span class="st">""</span>, IBRA_grid_bio_gen<span class="sc">$</span>prop_count)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co"># convert 'prop_count' to numeric </span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>IBRA_grid_bio_gen<span class="sc">$</span>prop_count <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(IBRA_grid_bio_gen<span class="sc">$</span>prop_count)</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co">#multiply by 1000000 for species richness density/km2 (was density/m2)</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>IBRA_grid_bio_gen<span class="sc">$</span>prop_count <span class="ot">&lt;-</span> IBRA_grid_bio_gen<span class="sc">$</span>prop_count <span class="sc">*</span> <span class="dv">1000000</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="co">#plot normalised species richness</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>bioregion_prop_gen <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> IBRA_grid_bio_gen, <span class="fu">aes</span>(<span class="at">fill =</span> prop_count), <span class="at">size =</span> .<span class="dv">01</span>) <span class="sc">+</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">colours =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"blue"</span>),</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">na.value =</span> <span class="st">"white"</span>,</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">trans =</span> <span class="st">"log10"</span>, <span class="co">#scale in log format for best visualisation</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">comma_format</span>(), <span class="co">#remove sci. notation</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">n.breaks =</span> <span class="dv">6</span>,</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">guide =</span> <span class="fu">guide_colourbar</span>(<span class="at">title =</span> <span class="st">"endemic genera </span><span class="sc">\n</span><span class="st">per km²"</span>)</span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">45</span>, <span class="sc">-</span><span class="dv">10</span>), </span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">110</span>, <span class="dv">155</span>)) <span class="sc">+</span></span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'longitude'</span>, <span class="at">y =</span> <span class="st">'latitude'</span>) <span class="sc">+</span></span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>bioregion_prop_gen</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="code_for_upload_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="secondary-analysis---regional-endemism-of-genera" class="level3">
+<h3 class="anchored" data-anchor-id="secondary-analysis---regional-endemism-of-genera">Secondary analysis - regional endemism of genera</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Calculate bioregions which contain genera found only within their bioregion</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co">#calculate the number of bioregions each genera are found within</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>genus_occurrences <span class="ot">&lt;-</span> unique_genera_bioregion_sf <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(genus) <span class="sc">%&gt;%</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">unique_regions =</span> <span class="fu">n_distinct</span>(REG_NAME_7), <span class="at">REG_NAME_7 =</span> <span class="fu">first</span>(REG_NAME_7))</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#filter df to only genera found in one bioregion</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>genus_occurrences <span class="ot">&lt;-</span> genus_occurrences <span class="sc">%&gt;%</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(unique_regions <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">#for each bioregion, count the number of genera found in only one bioregion</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>bioregion_counts <span class="ot">&lt;-</span> genus_occurrences <span class="sc">%&gt;%</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(REG_NAME_7) <span class="sc">%&gt;%</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">regionally_endemic_genera_count =</span> <span class="fu">n</span>())</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co">#arrange in descending order</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>bioregion_counts <span class="ot">&lt;-</span> <span class="fu">arrange</span>(bioregion_counts, <span class="fu">desc</span>(regionally_endemic_genera_count))</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="co">#print the top 5 regions containing endemic genera</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bioregion_counts, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 5 features and 2 fields
+Geometry type: MULTIPOINT
+Dimension:     XY
+Bounding box:  xmin: 114.7 ymin: -30.1 xmax: 153.3414 ymax: -13.45
+Geodetic CRS:  WGS 84
+# A tibble: 5 × 3
+  REG_NAME_7               regionally_endemic_genera…¹                  geometry
+  &lt;fct&gt;                                          &lt;int&gt;          &lt;MULTIPOINT [°]&gt;
+1 Wet Tropics                                       14 ((145.5811 -17.33779), (…
+2 Geraldton Sandplains                               3 ((115.1 -30.1), (115.4 -…
+3 Brigalow Belt North                                2 ((147.8712 -21.25615), (…
+4 Cape York Peninsula                                2 ((142.6833 -13.45), (143…
+5 South Eastern Queensland                           2 ((153.3414 -28.65539), (…
+# ℹ abbreviated name: ¹​regionally_endemic_genera_count</code></pre>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
