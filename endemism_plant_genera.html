@@ -57,16 +57,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="code_for_upload_files/libs/clipboard/clipboard.min.js"></script>
-<script src="code_for_upload_files/libs/quarto-html/quarto.js"></script>
-<script src="code_for_upload_files/libs/quarto-html/popper.min.js"></script>
-<script src="code_for_upload_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="code_for_upload_files/libs/quarto-html/anchor.min.js"></script>
-<link href="code_for_upload_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="code_for_upload_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="code_for_upload_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="code_for_upload_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="code_for_upload_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="endemism_plant_genera_files/libs/clipboard/clipboard.min.js"></script>
+<script src="endemism_plant_genera_files/libs/quarto-html/quarto.js"></script>
+<script src="endemism_plant_genera_files/libs/quarto-html/popper.min.js"></script>
+<script src="endemism_plant_genera_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="endemism_plant_genera_files/libs/quarto-html/anchor.min.js"></script>
+<link href="endemism_plant_genera_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="endemism_plant_genera_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="endemism_plant_genera_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="endemism_plant_genera_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="endemism_plant_genera_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -106,11 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(austraits)   <span class="co">#for download of austraits</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstatix)     <span class="co">#for Wilcox Rank sum test</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sp)          <span class="co">#for spatial mapping</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)          <span class="co">#for spatial mapping</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)      <span class="co">#for raster analysis</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(highcharter) <span class="co">#for treemapping</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(treemap)     <span class="co">#for treemapping</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)<span class="co">#for treemap colours</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)          <span class="co">#for spatial mapping</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="read-in-species-lists-and-occurence-data" class="level3">
@@ -659,7 +655,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>violin_seed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -677,7 +673,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>violin_height</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -689,7 +685,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#simplifying growth form to combine categories which begin with climber, fern, graminoids, shrub/include shrub, tree, herb. new column growth_form_simp</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>genera <span class="ot">&lt;-</span> genera <span class="sc">%&gt;%</span></span>
@@ -723,7 +719,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>growth_bar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -754,7 +750,7 @@ X-squared = 149.49, df = 8, p-value &lt; 2.2e-16</code></pre>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#filter data into main categories</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>dispersal_filtered <span class="ot">&lt;-</span> genera <span class="sc">%&gt;%</span></span>
@@ -780,7 +776,7 @@ X-squared = 149.49, df = 8, p-value &lt; 2.2e-16</code></pre>
 <span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>disp_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -834,7 +830,7 @@ X-squared = 17.575, df = 4, p-value = 0.001494</code></pre>
 <span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>threat_bar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -884,7 +880,7 @@ X-squared = 79.274, df = 6, p-value = 5.046e-15</code></pre>
 <pre><code>package 'remotes' successfully unpacked and MD5 sums checked
 
 The downloaded binary packages are in
-    C:\Users\adele\AppData\Local\Temp\Rtmpa63Rak\downloaded_packages</code></pre>
+    C:\Users\adele\AppData\Local\Temp\RtmpcXf14o\downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(remotes)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -944,7 +940,7 @@ The downloaded binary packages are in
 <span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>bio_gen_count</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -989,7 +985,7 @@ The downloaded binary packages are in
 <span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>bioregion_prop_gen</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="code_for_upload_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<p><img src="endemism_plant_genera_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>

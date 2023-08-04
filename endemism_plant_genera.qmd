@@ -21,10 +21,6 @@ library(austraits)   #for download of austraits
 library(rstatix)     #for Wilcox Rank sum test
 library(sp)          #for spatial mapping
 library(sf)          #for spatial mapping
-library(raster)      #for raster analysis
-library(highcharter) #for treemapping
-library(treemap)     #for treemapping
-library(RColorBrewer)#for treemap colours
 ```
 
 ### Read in species lists and occurence data
